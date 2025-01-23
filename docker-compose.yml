@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  mindsdb_latest:
+    image: mindsdb/mindsdb:latest
+    container_name: mindsdb_latest
+    networks:
+      - mindsdb_network
+    ports:
+      - "47334:47334" # Expose MindsDB API port
+    environment:
+      MINDSDB_ENV: production # Example environment variable
+
+  mindsdb_lightwood:
+    image: mindsdb/mindsdb:lightwood
+    container_name: mindsdb_lightwood
+    networks:
+      - mindsdb_network
+    ports:
+      - "47335:47334" # Expose another port for this instance
+    environment:
+      MINDSDB_ENV: production # Example environment variable
+
+networks:
+  mindsdb_network:
+    driver: bridge
