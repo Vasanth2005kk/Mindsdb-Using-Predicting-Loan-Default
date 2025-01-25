@@ -6,7 +6,7 @@ import pandas as pd
 # Dont' forget to specify your credenttials
 server = mindsdb_sdk.connect("http://172.17.0.1:47334/")
 project = server.get_project("mindsdb")
-model = project.list_models()[1]
+model = project.list_models()[0]
 
 # Web App title
 st.title("MindsDB Loan Default Prediction")
@@ -16,8 +16,8 @@ st.subheader("Enter the Following Details")
 gender=st.sidebar.selectbox("Gender", options=["Male", "Female"])
 loan_type=st.sidebar.selectbox("Loan Type", options=["type1", "type2", "type3"])
 credit_worthiness=st.sidebar.selectbox("Credit Worthiness", options=["l1", "l2"])
-open_credit=st.sidebar.selectbox("Open Credit", options=["opc", "npc"])
-neg_ammortization=st.sidebar.selectbox("Neg Ammortization", options=["not_meg", "neg_amm"])
+open_credit=st.sidebar.selectbox("Open Credit", options=["opc", "nopc"])
+neg_ammortization=st.sidebar.selectbox("Neg Ammortization", options=["not_neg", "neg_amm"])
 lump_sum_payment = st.sidebar.selectbox("Lump Sum Payment", options=["not_lpsm", "lpsm"])
 age = st.sidebar.selectbox("Age", ['25-34', '55-64', '35-44', '45-54', '65-74', '>74', '<25'])
 credit_score = st.sidebar.number_input("Credit Score", min_value=0, max_value=1000)
@@ -68,10 +68,13 @@ variables = {
 
 # Convert result to Dataframe
 result = pd.DataFrame(variables, index=[0])
-print(result)
+print("answer is:",model.predict(result)["status"].loc[0])
+status = model.predict(result)["status"].loc[0]
+# print("type:",type(status))
+
 
 # Handler to predict the result
 if st.button("Predict"):
-    if model.predict(result)["status"].loc[0] == 1:
+    if int(status) == 1:
         st.warning(f"This customer is at risk of defaulting on their loan. Please contact them to discuss their account😥.")
     st.success(f"This customer is not at risk of defaulting on their loan at this time.😉")
